@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV
 # from skcycling import Rider
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     parameters = {'C': [0.01, 0.1, 1, 10, 100, 1000],
                   'gamma': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 100]}
     svr = svm.SVR(kernel='rbf')
-    clf = GridSearchCV(svr, parameters, cv=5)
+    clf = GridSearchCV(svr, parameters, n_jobs=-1, verbose=1, cv=5)
     clf.fit(c_index, c_ppr)
 
     # plt.plot(np.linspace(0, 1, len(grad_data)), grad_data, 'r')

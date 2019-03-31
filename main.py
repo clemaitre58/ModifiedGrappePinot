@@ -45,6 +45,14 @@ def extract_great_data(data, index, l_aber):
     # print('cpt match', cpt_match)
     return clean_data, clean_index
 
+def create_feature(data):
+    data = np.array(data)
+    d1 = np.diff(data, prepend=data[0])
+    d2 = np.diff(d1, prepend=d1[0])
+    d3 = np.diff(d2, prepend=d2[0])
+    features = np.column_stack((data, d1, d2, d3))
+
+    return features
 
 if __name__ == '__main__':
 
@@ -57,15 +65,16 @@ if __name__ == '__main__':
     c_index = np.array(c_index)
     c_index = c_index.reshape(-1, 1)
     c_ppr = np.array(c_ppr)
+    features = create_feature(c_ppr)
 
     # X -- index
     # Y -- ppr
 
-    parameters = {'C': [0.01, 0.1, 1, 10, 100, 1000],
-                  'gamma': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 100]}
-    svr = svm.SVR(kernel='rbf')
-    clf = GridSearchCV(svr, parameters, n_jobs=-1, verbose=1, cv=5)
-    clf.fit(c_index, c_ppr)
+    # parameters = {'C': [0.01, 0.1, 1, 10, 100, 1000],
+    #               'gamma': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 100]}
+    svr = svm.SVR(kernel='rbf', gamma=0.0001, c=1000)
+    # clf = GridSearchCV(svr, parameters, n_jobs=-1, verbose=2, cv=5)
+    clf.fit(features, c_ppr)
 
     # plt.plot(np.linspace(0, 1, len(grad_data)), grad_data, 'r')
     # plt.show()
